@@ -20,13 +20,13 @@ class TaskController extends Controller
         ]);
         if ($validator->fails())
         {
-            return response()->json(['errors'=>$validator->errors()->all(),'status'=>404]);
+            return response()->json(['errors'=>$validator->errors()->all(),'status'=>404],404);
         }
         if(!$user) {
             return  response()->json([
                 "statusCode"=> 401,
                 "message"=>'Unauthorized'
-            ]);
+            ],401);
         }
         $title = $request->title;
         $description = $request->description;
@@ -45,7 +45,7 @@ class TaskController extends Controller
     "status"=>$status,
     "userId"=> $user->id,
     "id"=> $taskId
-        ]);
+        ],201);
     }
     public function getTasks(Request $request) {
         $userId = $request->user()->id;
@@ -65,7 +65,7 @@ class TaskController extends Controller
     }
     $tasks = $tasksQuery
      ->get();
-     return response()->json($tasks);
+     return response()->json($tasks,200);
 
     }
     public function getTaskById(Request $request,$id){
@@ -73,7 +73,7 @@ class TaskController extends Controller
     ->where(['id' => $id,'userId'=>$request->user()->id]);
     if($taskQuery->exists()) {
         $task = $taskQuery->get();
-       return response()->json($task);
+       return response()->json($task,200);
     }
     else {
 
@@ -84,7 +84,7 @@ class TaskController extends Controller
                 "message"=> "Task with " . $id . " not found",
                 "error"=> "Not Found"
 
-            ]
+            ],404
          );
     }
     }
@@ -97,7 +97,7 @@ class TaskController extends Controller
        ]
    )
    ->delete();
-   return response()->json($result);
+   return response()->json($result,200);
 
     }
 
@@ -114,7 +114,7 @@ class TaskController extends Controller
         ]);
    $task =  $taskQuery
             ->get();
-        return response()->json($task);
+        return response()->json($task,200);
 
 
     }
